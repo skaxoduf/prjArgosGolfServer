@@ -42,7 +42,7 @@ Partial Class Form1
         pnlGolfDemon.Controls.Add(txtGolfDemonDisp)
         pnlGolfDemon.Location = New Point(12, 88)
         pnlGolfDemon.Name = "pnlGolfDemon"
-        pnlGolfDemon.Size = New Size(815, 423)
+        pnlGolfDemon.Size = New Size(745, 419)
         pnlGolfDemon.TabIndex = 2
         ' 
         ' WebView21
@@ -52,9 +52,9 @@ Partial Class Form1
         WebView21.CreationProperties = Nothing
         WebView21.DefaultBackgroundColor = Color.White
         WebView21.ForeColor = Color.White
-        WebView21.Location = New Point(142, 106)
+        WebView21.Location = New Point(19, 44)
         WebView21.Name = "WebView21"
-        WebView21.Size = New Size(605, 252)
+        WebView21.Size = New Size(689, 338)
         WebView21.TabIndex = 1
         WebView21.Visible = False
         WebView21.ZoomFactor = 1R
@@ -66,7 +66,7 @@ Partial Class Form1
         txtGolfDemonDisp.Location = New Point(9, 9)
         txtGolfDemonDisp.Multiline = True
         txtGolfDemonDisp.Name = "txtGolfDemonDisp"
-        txtGolfDemonDisp.Size = New Size(788, 395)
+        txtGolfDemonDisp.Size = New Size(724, 399)
         txtGolfDemonDisp.TabIndex = 0
         ' 
         ' pnlMain
@@ -76,7 +76,7 @@ Partial Class Form1
         pnlMain.Controls.Add(btnEnv)
         pnlMain.Location = New Point(12, 12)
         pnlMain.Name = "pnlMain"
-        pnlMain.Size = New Size(815, 69)
+        pnlMain.Size = New Size(745, 69)
         pnlMain.TabIndex = 3
         ' 
         ' btnExit
@@ -84,7 +84,7 @@ Partial Class Form1
         btnExit.BackColor = Color.MidnightBlue
         btnExit.Font = New Font("맑은 고딕", 16F, FontStyle.Bold)
         btnExit.ForeColor = Color.White
-        btnExit.Location = New Point(655, 11)
+        btnExit.Location = New Point(618, 11)
         btnExit.Name = "btnExit"
         btnExit.Size = New Size(116, 48)
         btnExit.TabIndex = 0
@@ -120,7 +120,7 @@ Partial Class Form1
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         BackColor = Color.FromArgb(CByte(45), CByte(45), CByte(48))
-        ClientSize = New Size(837, 524)
+        ClientSize = New Size(769, 519)
         Controls.Add(pnlMain)
         Controls.Add(pnlGolfDemon)
         Icon = CType(resources.GetObject("$this.Icon"), Icon)

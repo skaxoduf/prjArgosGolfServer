@@ -31,8 +31,13 @@ Partial Class frmEnv
         pnlCompanyIDX = New Panel()
         Label1 = New Label()
         txtCompanyIDX = New TextBox()
+        Panel1 = New Panel()
+        Label3 = New Label()
+        Label4 = New Label()
+        cboSec = New ComboBox()
         pnlCompanyCode.SuspendLayout()
         pnlCompanyIDX.SuspendLayout()
+        Panel1.SuspendLayout()
         SuspendLayout()
         ' 
         ' btnExit
@@ -40,7 +45,7 @@ Partial Class frmEnv
         btnExit.BackColor = Color.MidnightBlue
         btnExit.Font = New Font("맑은 고딕", 15.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(129))
         btnExit.ForeColor = Color.White
-        btnExit.Location = New Point(255, 185)
+        btnExit.Location = New Point(250, 212)
         btnExit.Name = "btnExit"
         btnExit.Size = New Size(106, 48)
         btnExit.TabIndex = 2
@@ -52,7 +57,7 @@ Partial Class frmEnv
         btnSave.BackColor = Color.MidnightBlue
         btnSave.Font = New Font("맑은 고딕", 15.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(129))
         btnSave.ForeColor = Color.White
-        btnSave.Location = New Point(95, 185)
+        btnSave.Location = New Point(89, 212)
         btnSave.Name = "btnSave"
         btnSave.Size = New Size(106, 48)
         btnSave.TabIndex = 2
@@ -113,14 +118,54 @@ Partial Class frmEnv
         txtCompanyIDX.Size = New Size(139, 32)
         txtCompanyIDX.TabIndex = 5
         ' 
+        ' Panel1
+        ' 
+        Panel1.BackColor = SystemColors.ActiveCaption
+        Panel1.Controls.Add(Label3)
+        Panel1.Location = New Point(37, 151)
+        Panel1.Name = "Panel1"
+        Panel1.Size = New Size(112, 33)
+        Panel1.TabIndex = 3
+        ' 
+        ' Label3
+        ' 
+        Label3.AutoSize = True
+        Label3.Font = New Font("맑은 고딕", 12F, FontStyle.Bold)
+        Label3.Location = New Point(15, 6)
+        Label3.Name = "Label3"
+        Label3.Size = New Size(80, 21)
+        Label3.TabIndex = 0
+        Label3.Text = "서버 갱신"
+        ' 
+        ' Label4
+        ' 
+        Label4.AutoSize = True
+        Label4.Location = New Point(250, 161)
+        Label4.Name = "Label4"
+        Label4.Size = New Size(19, 15)
+        Label4.TabIndex = 6
+        Label4.Text = "초"
+        ' 
+        ' cboSec
+        ' 
+        cboSec.Font = New Font("맑은 고딕", 14F, FontStyle.Bold)
+        cboSec.FormattingEnabled = True
+        cboSec.Location = New Point(157, 151)
+        cboSec.Name = "cboSec"
+        cboSec.Size = New Size(87, 33)
+        cboSec.TabIndex = 7
+        ' 
         ' frmEnv
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(456, 260)
+        ClientSize = New Size(456, 284)
+        Controls.Add(cboSec)
+        Controls.Add(Label4)
         Controls.Add(txtCompanyIDX)
         Controls.Add(txtCompanyCode)
         Controls.Add(pnlCompanyIDX)
+        Controls.Add(Panel1)
         Controls.Add(pnlCompanyCode)
         Controls.Add(btnSave)
         Controls.Add(btnExit)
@@ -135,6 +180,8 @@ Partial Class frmEnv
         pnlCompanyCode.PerformLayout()
         pnlCompanyIDX.ResumeLayout(False)
         pnlCompanyIDX.PerformLayout()
+        Panel1.ResumeLayout(False)
+        Panel1.PerformLayout()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -147,4 +194,8 @@ Partial Class frmEnv
     Friend WithEvents pnlCompanyIDX As Panel
     Friend WithEvents Label1 As Label
     Friend WithEvents txtCompanyIDX As TextBox
+    Friend WithEvents Panel1 As Panel
+    Friend WithEvents Label3 As Label
+    Friend WithEvents Label4 As Label
+    Friend WithEvents cboSec As ComboBox
 End Class

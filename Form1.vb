@@ -10,10 +10,31 @@ Public Class Form1
     Private WithEvents trayIcon As New NotifyIcon()
     Private WithEvents trayMenu As New ContextMenuStrip()
     Private mainTimer As Timer
+    Private WithEvents refreshTimer As New System.Windows.Forms.Timer()
 
     Private isExiting As Boolean = False
 
+    Private WithEvents tmrLog1 As New System.Windows.Forms.Timer()
+    Private rnd As New Random()
 
+    Private systemWords As New List(Of String) From {
+        "Initializing kernel...",
+        "System.Core.dll loaded.",
+        "Authenticating user...",
+        "Access granted.",
+        "Compiling shader module...",
+        "Memory allocation: 0x7FFD... OK",
+        "Connecting to secure node...", "Firewall rule updated.", "Packet sent... ACK received.",
+        "Decrypting data block...", "Running diagnostics...", "CPU usage: normal",
+        "Disk I/O check... PASS", "Syncing with NTP server...", "Host resolved.",
+        "Establishing TLSv1.3 connection...", "Handshake complete.", "Daemon process started.",
+        "Querying database...", "Record found.", "Closing connection.", "Buffer overflow detected... patched.",
+        "Executing query : 1 Row Recv.....",
+        "Transaction started.",
+        "Commit complete.",
+        "Insex Complete.",
+        "Data Receive : INFRARED_02 ACTIVATED"
+    }
     Private Async Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         ' 폼 설정
@@ -38,13 +59,19 @@ Public Class Form1
             ' NavigationStarting : 페이지 로드 시도 로그 남기는용도
             AddHandler WebView21.CoreWebView2.NavigationStarting, AddressOf CoreWebView2_NavigationStarting
         Else
-            WriteLog("[WebView2] WebView21 컨트롤을 찾을 수 없습니다. WebView2 기능 비활성화.", LOG_TO_FILE, LOG_FILE_NAME)
+            WriteLog("Golf Server 컨트롤을 찾을 수 없습니다. Golf Server 기능 비활성화.", LOG_TO_FILE, LOG_FILE_NAME)
         End If
 
 
         ' 프로그램 시작 시 웹페이지 호출
-        Dim url As String = $"http://julist.webpos.co.kr/Golf/Server/Server.asp?Company_IDX={gCompanyIdx}&Company_Code={gCompanyCode}"
+        Dim url As String = $"http://julist.webpos.co.kr/Golf/Server/Server.asp?Company_IDX={gCompanyIdx}&Company_Code={gCompanyCode}&sec={gSec}"
         WebView21.Source = New Uri(url)
+
+
+        ' 웹페이지 새로고침 타이머 설정 (5분에 한번)
+        refreshTimer.Interval = 300000 ' 60,000 밀리초 = 1분
+        refreshTimer.Start()
+
 
         ' 트레이 메뉴 설정
         trayMenu.Items.Add("화면보기", Nothing, AddressOf ShowWindow)
@@ -56,6 +83,25 @@ Public Class Form1
         trayIcon.Visible = True
         trayIcon.ContextMenuStrip = trayMenu ' 메뉴 연결
 
+        TmrFormLoad()
+
+    End Sub
+    Private Sub TmrFormLoad()
+        ' 첫 번째 타이머 설정
+        tmrLog1.Interval = rnd.Next(2000, 5000)  ' 2초~5초사이
+        tmrLog1.Start()
+    End Sub
+    ' 첫 번째 타이머 이벤트: 랜덤 단어 표시
+    Private Sub tmrLog1_Tick(sender As Object, e As EventArgs) Handles tmrLog1.Tick
+        ' 랜덤 단어 선택
+        Dim randomIndex As Integer = rnd.Next(0, systemWords.Count)
+        Dim randomWord As String = systemWords(randomIndex)
+
+        ' 텍스트 박스에 추가
+        AppendLog(txtGolfDemonDisp, randomWord)
+
+        ' 다음 실행 간격을 다시 랜덤으로 설정
+        tmrLog1.Interval = rnd.Next(2000, 5000)
     End Sub
     Private Async Function subFormLoad() As Task(Of Boolean)
 
@@ -142,32 +188,39 @@ Public Class Form1
     Private Sub CoreWebView2_NavigationStarting(sender As Object, e As CoreWebView2NavigationStartingEventArgs)
         ' WebView2가 무언가를 로드하려고 시도 중임을 알려줍니다.
 
-        WriteLog($"[WebView2] 탐색 시작: {e.Uri}", LOG_TO_FILE, LOG_FILE_NAME)
+        WriteLog($"Golf Server 탐색 시작", LOG_TO_FILE, LOG_FILE_NAME)
     End Sub
     Private Sub CoreWebView2_NavigationCompleted(sender As Object, e As CoreWebView2NavigationCompletedEventArgs)
 
-
-        WriteLog($"[WebView2] NavigationCompleted 이벤트 시작. 현재 로드 시도 URL: {WebView21.Source.ToString()}", LOG_TO_FILE, LOG_FILE_NAME)
+        WriteLog($"Golf Server 이벤트 시작", LOG_TO_FILE, LOG_FILE_NAME)
 
         If e.IsSuccess Then
-            WriteLog($"[WebView2] 웹페이지 로드 성공: {WebView21.Source.ToString()}", LOG_TO_FILE, LOG_FILE_NAME)
+            WriteLog($"Golf Server 로드 성공", LOG_TO_FILE, LOG_FILE_NAME)
         Else
-            WriteLog($"[WebView2] 웹페이지 로드 실패: {WebView21.Source.ToString()}, 오류 상태: {e.WebErrorStatus}, HTTP 상태: {e.HttpStatusCode}", LOG_TO_FILE, LOG_FILE_NAME)
+            WriteLog($"Golf Server 로드 실패: {WebView21.Source.ToString()}, 오류 상태: {e.WebErrorStatus}, HTTP 상태: {e.HttpStatusCode}", LOG_TO_FILE, LOG_FILE_NAME)
             Me.Invoke(Sub()
-                          MessageBox.Show($"웹페이지 로드 실패: {WebView21.Source.ToString()}{Environment.NewLine}오류 상태: {e.WebErrorStatus}{Environment.NewLine}HTTP 상태 코드: {e.HttpStatusCode}", "WebView2 오류", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                          MessageBox.Show($"Golf Server 로드 실패: {WebView21.Source.ToString()}{Environment.NewLine}오류 상태: {e.WebErrorStatus}{Environment.NewLine}HTTP 상태 코드: {e.HttpStatusCode}", "WebView2 오류", MessageBoxButtons.OK, MessageBoxIcon.Error)
                       End Sub)
 
         End If
     End Sub
     Private Function Config_Load() As Boolean
+
         Config_Load = True
         Try
             gAppPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Application.ExecutablePath), INI_FILENAME)
             gCompanyIdx = DecryptString(GetIni("Settings", "CompanyIDX", gAppPath))
             gCompanyCode = DecryptString(GetIni("Settings", "CompanyCode", gAppPath))
 
+            Dim secValueString As String = GetIni("Settings", "Sec", gAppPath)
+            If IsNumeric(secValueString) AndAlso CInt(secValueString) >= 3 AndAlso CInt(secValueString) <= 10 Then
+                gSec = CInt(secValueString)
+            Else
+                gSec = 10
+            End If
+
             If gCompanyIdx = "" Or gCompanyCode = "" Then
-                WriteLog($"설정이 잘못되었습니다.", LOG_TO_FILE, LOG_FILE_NAME)
+                WriteLog($"Golf Server 설정이 잘못되었습니다.", LOG_TO_FILE, LOG_FILE_NAME)
                 Config_Load = False
             End If
 
@@ -175,6 +228,7 @@ Public Class Form1
             WriteLog($"설정 파일을 읽는 중 오류가 발생했습니다: " & ex.Message, LOG_TO_FILE, LOG_FILE_NAME)
             Config_Load = False
         End Try
+
     End Function
     ' 폼 크기 변경 시 트레이로 이동
     Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
@@ -193,7 +247,7 @@ Public Class Form1
         ' 단순화를 위해 여기서는 보일 때마다 false 처리
     End Sub
     Private Sub ExitApplication()
-        If MessageBox.Show("종료하시겠습니까?", "확인", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+        If MessageBox.Show("Golf Server를 종료하시겠습니까?", "확인", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
             Me.Close()
         End If
     End Sub
@@ -253,11 +307,9 @@ Public Class Form1
             End Try
         End If
     End Sub
-
     Private Sub btnExit_Click(sender As Object, e As EventArgs) Handles btnExit.Click
         Me.Close()
     End Sub
-
     Private Sub Form1_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
         ' 이 코드는 사용자가 어떤 방식으로든 폼을 닫으려고 할 때 실행됩니다 (X 버튼 포함).
         ' 비밀번호 인증 함수를 호출해서 인증에 실패했다면(False),
@@ -267,8 +319,19 @@ Public Class Form1
             Return
         End If
     End Sub
-
     Private Sub btnClear_Click(sender As Object, e As EventArgs) Handles btnClear.Click
         txtGolfDemonDisp.Clear()
+    End Sub
+    Private Sub refreshTimer_Tick(sender As Object, e As EventArgs) Handles refreshTimer.Tick
+        Try
+            ' WebView2 컨트롤이 존재하고 CoreWebView2 개체가 초기화되었는지 확인
+            If WebView21 IsNot Nothing AndAlso WebView21.CoreWebView2 IsNot Nothing Then
+                WebView21.Reload()
+                WriteLog("Golf Server Reload", LOG_TO_FILE, LOG_FILE_NAME)
+            End If
+        Catch ex As Exception
+            WriteLog($"Golf Server Reload 중 오류 발생: {ex.Message}", LOG_TO_FILE, LOG_FILE_NAME)
+        End Try
+
     End Sub
 End Class
